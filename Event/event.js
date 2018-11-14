@@ -6,6 +6,8 @@ window.onload = function(){
     game.preload("img/character1.png");
     //ゲームで使う画像のパスを入力する。カンマで区切って複数入れることができる
     game.fps = 20;
+    //testestes
+    
     //gameオブジェクトkeybind
     //第1因数にキーのASCLLコード　第2因数に割り当てるボタン
     //キーのASCLLコード
