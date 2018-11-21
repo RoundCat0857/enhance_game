@@ -3,8 +3,8 @@ enchant()
 window.onload = function() {
   const core = new Core(256, 192)
   core.fps = 10
-  core.preload('./texture/map1.png', './texture/char1.png')
-  core.onload = function() {
+  core.preload('./texture/map1.png', './texture/char1.png', './texture/back.png')
+  core.onload = function load() {
     const { field, object } = maps[2]
 
     const map = new Map(16,16)
@@ -61,7 +61,9 @@ window.onload = function() {
             arguments.callee.call(this);
           } else if (0 <= x && x < map.width && 0 <= y && y < map.height && map.hitTest(x, y)) {
             if (map.collisionData[(this.y+this.vy)/16+1][(this.x+this.vx)/16+1]===2) {
-              console.log('ツルハシを使いますか?(y/n)')
+              const textObj = {0:'ツルハシを使いますか?',1:'はい',2:'いいえ'}
+              setBackGroundImage(core,stage,'./texture/back.png')
+              setChoiceScene(stage, textObj)
               let key = ''
               while (key !== 'y' && key !== 'n') {
                 core.pause()
@@ -74,6 +76,10 @@ window.onload = function() {
                 object[(this.y+this.vy)/16+1][(this.x+this.vx)/16+1]=-1
                 forergoundMap.loadData(object)
               }
+              for (let k in textObj) {
+                stage.removeChild(stage.lastChild)
+              }
+              stage.removeChild(stage.lastChild)
             }
           }
         }
