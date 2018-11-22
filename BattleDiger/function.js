@@ -2,42 +2,32 @@ function setBackGroundImage(core,stage,args){
   const backImage = new Sprite(256, 48);
   backImage.image = core.assets[args];
   //backImage.scale(0.5,0.5)
-  backImage.x = 0;
-  backImage.y = 144;
+  const {x,y} = stage
+  backImage.x = 0 - x;
+  backImage.y = 144 - y;
   stage.addChild(backImage);
 }
 
 function setChoiceScene(stage,object){
   //選択肢１
+  const {x,y} = stage
   for (let k in object) {
     const text = new Label(object[k]);
-    text.font  = "8px monospace";
+    text.font  = "8px";
     text.color = "rgb(255, 255, 255)";
-    text.y = 152 + 10 * k;
-    text.x = 10;
+    text.y = 152 + 10 * k - y;
+    text.x = 10 - x;
     text.width = 246;
     text.height = 8;
     stage.addChild(text);
   }
+}
 
-    //シーン名が渡されます
-    /*text.addEventListener('touchstart',function(e){
-          executeNext(eval(args[1]));
-    });*/
-
-    //選択肢２
-  /*
-  let text2 = new Label(object[2]);
-  text2.font  = "16px monospace";
-  text2.color = "rgb(0, 0, 0)";
-  text2.y = 172;
-  text2.x = 10;
-  text2.width = 246;
-  text2.height = 16;
-  textLayer.addChild(text2);
-  */
-    //シーン名が渡されます
-    /*text2.addEventListener('touchstart',function(e){
-        executeNext(eval(args[3]));
-    });*/
+function awaitForKeydown(document) {
+  return new Promise((resolve, reject) => {
+    document.addEventListener('keydown', resolve)
+    if (!resolve) {
+      resolve()
+    }
+  })
 }
