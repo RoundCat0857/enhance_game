@@ -1,32 +1,37 @@
 enchant()
 
-window.onload = function() {
+window.onload = function load() {
   const core = new Core(256, 192)
   core.fps = 10
-  core.preload('./texture/map1.png', './texture/char1.png', './texture/back.png')
-  core.onload = function load() {
-    const { field, object } = maps[2]
+  core.preload('./texture/map1.png', './texture/char1.png', './texture/back.png', './texture/effect1.png')
+  core.onload = function() {
+    const { field, object, collision, start, next } = maps[2]
+    const obj = JSON.parse(JSON.stringify(object))
+    const col = JSON.parse(JSON.stringify(collision))
 
     const map = new Map(16,16)
     map.image = core.assets['./texture/map1.png']
     map.loadData(field)
-    map.collisionData = maps[2].collision
+    map.collisionData = col
 
     const forergoundMap = new Map(16,16)
     forergoundMap.image = core.assets['./texture/map1.png']
-    forergoundMap.loadData(object)
+    forergoundMap.loadData(obj)
 
     const player = new Sprite(48,48)
     player.image = core.assets['./texture/char1.png']
     player.scale(0.33,0.33)
-    const [x,y] = maps[2].start
-    player.x = x*16
-    player.y = y*16
+    const [x,y] = start
+    player.x = x * 16
+    player.y = y * 16
 
     player.isMoving = false
     // player.direction = 0
     // player.walk = 1
     player.addEventListener('enterframe', async function() {
+      if (this.x === next[0] * 16 && this.y === next[1] * 16) {
+        load()
+      }
       // this.frame = this.direction * 3 + this.walk
       if (this.isMoving) {
         this.moveBy(this.vx, this.vy);
@@ -61,7 +66,7 @@ window.onload = function() {
             arguments.callee.call(this);
           } else if (0 <= x && x < map.width && 0 <= y && y < map.height && map.hitTest(x, y)) {
             if (map.collisionData[(this.y+this.vy)/16+1][(this.x+this.vx)/16+1]===2) {
-              const textObj = {0:'ツルハシを使いますか?',1:'はい',2:'いいえ'}
+              const textObj = {0:'ツルハシを使いますか?',1:'y:はい',2:'n:いいえ'}
               setBackGroundImage(core,stage,'./texture/back.png')
               setChoiceScene(stage, textObj)
               let key = ''
@@ -73,8 +78,8 @@ window.onload = function() {
               core.resume()
               if (key === 'y') {
                 map.collisionData[(this.y+this.vy)/16+1][(this.x+this.vx)/16+1]=0
-                object[(this.y+this.vy)/16+1][(this.x+this.vx)/16+1]=-1
-                forergoundMap.loadData(object)
+                obj[(this.y+this.vy)/16+1][(this.x+this.vx)/16+1]=-1
+                forergoundMap.loadData(obj)
               }
               for (let k in textObj) {
                 stage.removeChild(stage.lastChild)
@@ -102,13 +107,4 @@ window.onload = function() {
     core.rootScene.addChild(stage)
   }
   core.start()
-}
-
-function awaitForKeydown(document) {
-  return new Promise((resolve, reject) => {
-    document.addEventListener('keydown', resolve)
-    if (!resolve) {
-      resolve()
-    }
-  })
 }
